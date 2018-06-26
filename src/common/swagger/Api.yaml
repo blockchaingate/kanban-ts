@@ -1,12 +1,14 @@
 swagger: "2.0"
 info:
-  version: 1.0.0
+  version: 0.0.1
   title: Kanban
   description: Kanban
 basePath: /api/v1
 tags:
-  - name: Examples
-    description: Simple example endpoints
+  - name: Balance
+    description: Account balance endpoints
+  - name: Network Information
+    description: FAB Network status
 
 consumes:
   - application/json
@@ -14,52 +16,71 @@ produces:
   - application/json
 
 definitions:
-  ExampleBody:
+  BalanceBody:
     type: object
-    title: example
+    title: balance
     required:
-      - name
+      - account
     properties:
-      name:
+      account:
         type: string
-        description: The example name
+        description: Account ID
+      balance:
+        type: integer
+        description: Account balance
 
 paths:
-  /examples:
+  /network:
     get:
       tags:
-        - Examples
-      description: Fetch all examples
+        - Network Information
+      description: Fetch current network info
       responses:
         200:
-          description: Returns all examples
+          description: Returns current network information
+  /peer-info:
+      get:
+        tags:
+          - Network Information
+        description: Fetch peer info
+        responses:
+          200:
+            description: Returns connected peer information
+  /balance:
+    get:
+      tags:
+        - Balance
+      description: Fetch balance of all accounts
+      responses:
+        200:
+          description: Returns balance of all accounts
     post:
       tags:
-        - Examples
-      description: Create a new example
+        - Balance
+      description: Create a new account with balance
       parameters:
         - name: body
           in: body
-          description: number of items to skip
+          description: Account with balance info
           required: true
           schema: 
-            $ref: "#/definitions/ExampleBody"
+            $ref: "#/definitions/BalanceBody"
       responses:
         200:
-          description: Returns all examples
+          description: Successfully created account
 
-  /examples/{id}:
+  /balance/{account}:
     get:
       tags:
-        - Examples
+        - Balance
       parameters:
-        - name: id
+        - name: account
           in: path
           required: true
-          description: The id of the entity to retrieve
-          type: integer
+          description: The account of user wallet
+          type: string
       responses:
         200:
-          description: Return the example with the specified id
+          description: Return the balance of specific account
         404:
-          description: Example not 
+          description: Account not found

@@ -1,37 +1,29 @@
-import * as Promise from 'bluebird';
-import L from '../../common/logger';
+import { AsyncBlockingQueue } from '../common/queue';
+import { FabRpcClient } from '../common/fab-rpc-client';
+import { l } from '../../common/logger';
 
-let id = 0;
-interface Example {
-  id: number,
-  name: string
-};
+export class RPCService {
+    private childPool: AsyncBlockingQueue<FabRpcClient> = new AsyncBlockingQueue<FabRpcClient>(10);
 
-const examples: Example[] = [
-  { id: id++, name: 'example 0' },
-  { id: id++, name: 'example 1' }
-];
+    constructor() {
+        // for (let i: number = 0; i < 10; ++i) {
+        //     this.childPool.put(new FabRpcClient());
+        // }
+    }
 
-export class ExamplesService {
-  all(): Promise<Example[]> {
-    L.info(examples, 'fetch all examples');
-    return Promise.resolve(examples);
-  }
+    private async getWorker(): Promise<FabRpcClient> {
+        return await this.childPool.get();
+    }
 
-  byId(id: number): Promise<Example> {
-    L.info(`fetch example with id ${id}`);
-    return this.all().then(r => r[id])
-  }
+    private returnWorker(worker: FabRpcClient) {
+        this.childPool.put(worker);
+    }
 
-  create(name: string): Promise<Example> {
-    L.info(`create example with name ${name}`);
-    const example: Example = {
-      id: id++,
-      name
-    };
-    examples.push(example);
-    return Promise.resolve(example);
-  }
+    async run(method: string, ...args: string[]) {
+        const worker: FabRpcClient = new FabRpcClient({user: 'dummy', pass: 'dummy'}); //TODO: hardcode for now for testing
+        return await worker.call(method, args);
+    }
 }
 
-export default new ExamplesService();
+const rpc: RPCService = new RPCService();
+export { rpc };

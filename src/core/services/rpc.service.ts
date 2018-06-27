@@ -5,6 +5,11 @@ import { l } from '../../common/logger';
 
 export class RPCService {
     private childPool: AsyncBlockingQueue<FabRpcClient> = new AsyncBlockingQueue<FabRpcClient>(10);
+    private defaultRPCOptions: RpcRequestOptions = {
+        user: process.env.FAB_USER,
+        pass: process.env.FAB_PASSWORD,
+        port: Number(process.env.FAB_RPC_PORT)
+    };
 
     constructor() {
         // for (let i: number = 0; i < 10; ++i) {
@@ -23,7 +28,8 @@ export class RPCService {
     async run(method: string, opts: RpcRequestOptions = {}, ...args: string[]) {
         //TODO: add worker pool
         l.debug(`Running RPC command ${method}...`);
-        const worker: FabRpcClient = new FabRpcClient({user: process.env.FAB_USER, pass: process.env.FAB_PASSWORD, opts});
+        const defaultOptions: RpcRequestOptions = this.defaultRPCOptions;
+        const worker: FabRpcClient = new FabRpcClient({...defaultOptions, ...opts});
         return await worker.call(method, args);
     }
 }

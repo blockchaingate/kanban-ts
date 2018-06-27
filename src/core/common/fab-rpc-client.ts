@@ -54,6 +54,7 @@ export class FabRpcClient {
                 agent: false,
                 rejectUnauthorized: this.opts.ssl && this.opts.sslStrict !== false
             };
+            l.debug(requestOptions);
 
             if (this.opts.ssl && this.opts.sslCa) {
                 requestOptions.ca = this.opts.sslCa;

@@ -8,7 +8,9 @@ tags:
   - name: Balance
     description: Account balance endpoints
   - name: Network Information
-    description: FAB Network status
+    description: FAB network status
+  - name: RPC Testing
+    description: RPC test interface
 
 consumes:
   - application/json
@@ -28,8 +30,36 @@ definitions:
       balance:
         type: integer
         description: Account balance
-
+  RPCBody:
+    type: object
+    title: rpc
+    required:
+      - method
+    properties:
+      method:
+        type: string
+        description: RPC method to run
+      args:
+        type: array
+        items:
+          type: string
+        description: RPC arguments
 paths:
+  /rpc:
+    post:
+      tags:
+        - RPC Testing
+      description: Raw interface for running RPC commands on fabcli
+      parameters:
+        - name: body
+          in: body
+          description: RPC command to run
+          required: true
+          schema:
+            $ref: "#/definitions/RPCBody"
+      responses:
+        200:
+          description: Commands successfully running
   /network:
     get:
       tags:

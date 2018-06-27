@@ -1,4 +1,6 @@
 export interface RpcRequestOptions {
+    user?: string;
+    pass?: string;
     host?: string;
     port?: number;
     path?: string;

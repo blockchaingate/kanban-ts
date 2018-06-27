@@ -1,3 +1,4 @@
+import { RpcRequestOptions } from '../interfaces';
 import { AsyncBlockingQueue } from '../common/queue';
 import { FabRpcClient } from '../common/fab-rpc-client';
 import { l } from '../../common/logger';
@@ -19,8 +20,10 @@ export class RPCService {
         this.childPool.put(worker);
     }
 
-    async run(method: string, ...args: string[]) {
-        const worker: FabRpcClient = new FabRpcClient({user: 'dummy', pass: 'dummy'}); //TODO: hardcode for now for testing
+    async run(method: string, opts: RpcRequestOptions = {}, ...args: string[]) {
+        //TODO: add worker pool
+        l.debug(`Running RPC command ${method}...`);
+        const worker: FabRpcClient = new FabRpcClient({user: process.env.FAB_USER, pass: process.env.FAB_PASSWORD, opts});
         return await worker.call(method, args);
     }
 }

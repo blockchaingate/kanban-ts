@@ -11,7 +11,7 @@ import { l } from './logger';
 
 const app: Application = express();
 
-export default class ExpressServer {
+export default class KanbanServer {
     constructor() {
         const root: any = path.normalize(__dirname + '/../..');
         app.set('appPath', root + 'client');
@@ -22,7 +22,7 @@ export default class ExpressServer {
         app.use(express.static(`${root}/public`));
     }
 
-    router(routes: (app: Application) => void): ExpressServer {
+    router(routes: (app: Application) => void): KanbanServer {
         swaggerify(app, routes);
         return this;
     }

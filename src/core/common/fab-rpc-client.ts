@@ -1,7 +1,8 @@
 import { ClientRequest } from 'http';
 import * as http from 'http';
 import * as https from 'https';
-import { RpcRequestOptions } from '../interfaces/rpc-request-options';
+import { RpcRequestOptions } from '../interfaces';
+import { l } from '../../common/logger';
 
 
 export class FabRpcClient {
@@ -75,6 +76,7 @@ export class FabRpcClient {
                 cbCalled = true;
                 request.abort();
                 const err: Error = new Error('ETIMEDOUT');
+                l.error(err);
                 reject(err);
             }, this.opts.timeout || 30000);
 
@@ -86,10 +88,12 @@ export class FabRpcClient {
                 cbCalled = true;
                 request.abort();
                 const err: Error = new Error('ESOCKETTIMEDOUT');
+                l.error(err);
                 reject(err);
             });
 
             request.on('error', (err) => {
+                l.error(err);
                 if (cbCalled) {
                     return;
                 }
@@ -145,9 +149,11 @@ export class FabRpcClient {
                     } catch (e) {
                         if (response.statusCode !== 200) {
                             err = new Error('Invalid params, response status code: ' + response.statusCode);
+                            l.error(err);
                             reject(err);
                         } else {
                             err = new Error('Problem parsing JSON response from server');
+                            l.error(err);
                             reject(err);
                         }
                         return;

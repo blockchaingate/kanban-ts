@@ -1,0 +1,3 @@
+[submodule "fabcoin"]
+	path = fabcoin
+	url = https://github.com/tmilev/fabcoin.git

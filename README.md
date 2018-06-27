@@ -11,6 +11,8 @@ git submodule update --init --recursive
 You need to have the fabcoin executables before you run Kanban. Please follow the instructions in [Fabcoin project repository](https://github.com/blockchaingate/fabcoin) to have a compiled version locally.
 
 ## Setup the configuration
+Create your own `.env` file in the root folder with the information you have, here's a sample:
+
 ```
 APP_ID=kanban-ts
 PORT=3000
